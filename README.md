@@ -1,24 +1,34 @@
 # DPDP Consent Ledger
 
-A blockchain-backed consent management prototype inspired by India's Digital Personal Data Protection (DPDP) framework. The application hashes a user's identifier with SHA-256 before sending consent data to a smart-contract interface through a local Hardhat node.
+A blockchain-backed consent management prototype inspired by India's Digital Personal Data Protection (DPDP) framework. The application hashes a user's identifier with SHA-256 before sending consent data to a smart contract through a local Hardhat network.
 
 ## Features
 
-- Consent preference capture through a lightweight web dashboard
-- SHA-256 hashing of the user identifier before blockchain submission
-- REST API built with Express
-- Ethers.js integration with a local Hardhat JSON-RPC node
-- Smart-contract interface for updating and checking consent status
-- CORS-enabled frontend/backend communication
+- Consent preference capture through a web dashboard
+- SHA-256 hashing before blockchain submission
+- Express REST API
+- Ethers.js blockchain integration
+- Solidity consent ledger contract
+- Local Hardhat deployment workflow
+- Environment-based configuration for sensitive values
 
-## Project Files
+## Project Structure
 
-- `index.html` — consent dashboard and frontend interaction
-- `server.js` — Express API and blockchain relayer logic
-- `hardhat.config.js` — Hardhat configuration using Solidity 0.8.24
-- `package.json` / `package-lock.json` — Node.js dependencies
+```text
+.
+├── contracts/
+│   └── ConsentLedger.sol
+├── scripts/
+│   └── deploy.js
+├── index.html
+├── server.js
+├── hardhat.config.js
+├── package.json
+├── .env.example
+└── .gitignore
+```
 
-## Local Setup
+## Run Locally
 
 ### 1. Install dependencies
 
@@ -26,29 +36,47 @@ A blockchain-backed consent management prototype inspired by India's Digital Per
 npm install
 ```
 
-### 2. Start a local Hardhat node
+### 2. Start Hardhat
 
 ```bash
 npx hardhat node
 ```
 
-### 3. Configure the deployed contract
+Keep this terminal running.
 
-Deploy the compatible consent smart contract to the local Hardhat network and replace `PASTE_YOUR_DEPLOYED_ADDRESS_HERE` in `server.js` with the deployed contract address.
+### 3. Deploy the contract
 
-> The uploaded source set contains the application/backend files but does not include the Solidity contract or deployment script, so those components must be added before the complete blockchain flow can run end-to-end.
-
-### 4. Start the API
+In a second terminal:
 
 ```bash
-node server.js
+npx hardhat run scripts/deploy.js --network localhost
 ```
 
-The API listens on `http://localhost:3000`.
+Copy the deployed contract address printed in the terminal.
 
-### 5. Open the dashboard
+### 4. Configure the API
 
-Open `index.html` in a browser while the API and local Hardhat node are running.
+Create a `.env` file from `.env.example` and set:
+
+```text
+RPC_URL=http://127.0.0.1:8545
+PRIVATE_KEY=your_local_hardhat_private_key
+CONTRACT_ADDRESS=your_deployed_contract_address
+```
+
+Use a development-only local account key when running the local Hardhat network. Never commit a real private key.
+
+### 5. Start the API
+
+```bash
+npm start
+```
+
+The API runs on port `3000`.
+
+### 6. Open the dashboard
+
+Open `index.html` in a browser and submit a consent preference.
 
 ## Architecture
 
@@ -58,29 +86,40 @@ Browser Dashboard
        v
 Express REST API
        |
-       | SHA-256 user identifier
+       | SHA-256 identifier
        v
 Ethers.js Relayer
        |
        v
-Local Hardhat Network
+Hardhat Network
        |
        v
-Consent Smart Contract
+ConsentLedger.sol
 ```
+
+## API
+
+`POST /api/consent`
+
+Example body:
+
+```json
+{
+  "userId": "example-user",
+  "purpose": "marketing_analytics",
+  "status": true
+}
+```
+
+The API hashes the identifier and stores the consent state against the hash and purpose.
 
 ## Privacy Note
 
-This is a prototype. Hashing an identifier does not automatically make data anonymous or guarantee DPDP compliance. Production deployments should use appropriate privacy, key-management, access-control, consent-versioning, audit, retention, and security controls.
+This is an educational prototype, not a production compliance system. Hashing an identifier does not automatically make data anonymous or guarantee DPDP compliance. Production systems require appropriate privacy, security, access-control, key-management, consent-versioning, audit, retention, and governance controls.
 
 ## Tech Stack
 
-- JavaScript / Node.js
-- Express
-- Ethers.js
-- Hardhat
-- Solidity 0.8.24
-- HTML/CSS/JavaScript
+JavaScript · Node.js · Express · Ethers.js · Hardhat · Solidity · HTML/CSS
 
 ## License
 
