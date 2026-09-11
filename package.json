@@ -1,0 +1,26 @@
+{
+  "name": "dpdp-consent-ledger",
+  "version": "1.0.0",
+  "description": "Blockchain-backed DPDP consent management prototype",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "node": "hardhat node",
+    "test": "echo \"No automated tests configured yet\" && exit 0"
+  },
+  "keywords": ["dpdp", "consent", "blockchain", "hardhat", "ethers", "privacy"],
+  "author": "Aditya Thakur",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "ethers": "^6.11.1",
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-chai-matchers": "^3.0.0",
+    "@nomicfoundation/hardhat-toolbox": "^2.0.2",
+    "hardhat": "^3.8.0"
+  },
+  "type": "module"
+}
