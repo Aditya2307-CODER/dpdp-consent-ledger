@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DPDP Consent Ledger</title>
+  <style>
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background:#0f172a; color:#f8fafc; max-width:500px; margin:60px auto; padding:25px; border-radius:12px; border:1px solid #1e293b; }
+    h2 { color:#38bdf8; border-bottom:2px solid #1e293b; padding-bottom:10px; }
+    .form-group { margin-bottom:20px; }
+    label { display:block; font-weight:600; margin-bottom:8px; color:#94a3b8; }
+    input[type=text] { width:100%; padding:10px; background:#1e293b; border:1px solid #334155; border-radius:6px; color:#fff; box-sizing:border-box; }
+    .checkbox-container { display:flex; align-items:center; background:#1e293b; padding:12px; border-radius:6px; border:1px solid #334155; }
+    input[type=checkbox] { width:18px; height:18px; margin-right:12px; }
+    button { background:#0284c7; color:white; border:0; padding:12px; width:100%; border-radius:6px; font-weight:bold; font-size:15px; cursor:pointer; margin-top:10px; }
+    h3 { color:#38bdf8; margin-top:25px; font-size:16px; }
+    #log { background:#020617; padding:15px; border-radius:6px; font-family:monospace; font-size:12px; white-space:pre-wrap; word-break:break-all; border:1px solid #1e293b; max-height:200px; overflow:auto; }
+  </style>
+</head>
+<body>
+  <h2>🇮🇳 DPDP Consent Ledger</h2>
+  <div class="form-group">
+    <label for="userId">Data Principal Identifier:</label>
+    <input type="text" id="userId" placeholder="Enter email or phone">
+  </div>
+  <div class="form-group">
+    <label>Processing Purpose:</label>
+    <div class="checkbox-container">
+      <input type="checkbox" id="marketing" checked>
+      <span>Allow Personalization &amp; Marketing Analytics</span>
+    </div>
+  </div>
+  <button onclick="commitToBlockchain()">Update Consent Preference</button>
+  <h3>Smart Contract Event Receipt Log:</h3>
+  <div id="log">Awaiting user interaction...</div>
+  <script>
+    async function commitToBlockchain() {
+      const userId = document.getElementById('userId').value.trim();
+      const status = document.getElementById('marketing').checked;
+      const log = document.getElementById('log');
+      if (!userId) { log.textContent = 'Please enter an identifier.'; return; }
+      log.textContent = 'Submitting consent update...';
+      try {
+        const response = await fetch('http://127.0.0.1:3000/api/consent', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId, purpose: 'marketing_analytics', status })
+        });
+        const data = await response.json();
+        log.textContent = JSON.stringify(data, null, 2);
+      } catch (err) {
+        log.textContent = 'Connection failed. Make sure the API is running on port 3000.';
+      }
+    }
+  </script>
+</body>
+</html>
